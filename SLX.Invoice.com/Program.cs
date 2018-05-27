@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,7 +17,10 @@ namespace SLX.Invoice.com
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("-------------系统正在执行，请勿关闭该窗口，执行完毕后，会自动关闭----------------");
+
             FindInvoice();
+            Console.WriteLine("-------------end----------------");
             Console.ReadKey();
         }
         /// <summary>
@@ -25,14 +29,15 @@ namespace SLX.Invoice.com
         static void FindInvoice()
         {
             int limit = 0;
-            var date = DateTime.Now.AddDays(-26).ToString("yyyy-MM-dd"); //消费日期
+            var date = DateTime.Now.AddDays(-29).ToString("yyyy-MM-dd"); //消费日期
             int minxAmount = 50;  //最低金额
             int maxAmount = 220;//最高金额
             string waterNumber = "811147"; //"8011275";////商家
-            for (int i = 106; i <= 300; i++)
+            for (int i = 100; i <= 300; i++)
             {
 
                 string billNumber = $"B{i.ToString().PadLeft(3, '0')}";//$"H000{i.ToString().PadLeft(3, '0')}";// 
+
                 for (int j = minxAmount; j <= maxAmount; j++)
                 {
                     string strAmount = ((decimal)j).ToString();
@@ -49,7 +54,7 @@ namespace SLX.Invoice.com
                     {
                         limit += j;
                         string id = Guid.NewGuid().ToString().Substring(0, 4);
-                        Console.WriteLine($"捞到一张金额为{strAmount}");
+                        Console.WriteLine($"捞到一张金额为{strAmount},总金额为{limit}元");
                         var name = $"金额{strAmount}元_{date}_{id}";
                         Generate1(url, name);//生成二维码
 
@@ -57,7 +62,7 @@ namespace SLX.Invoice.com
                     }
                     Random random = new Random();
                     var intRandom = random.Next(1000, 4000);
-                    Thread.Sleep(1000);
+                    Thread.Sleep(intRandom);
                 }
                 if (limit > 1000)
                 {
@@ -84,9 +89,25 @@ namespace SLX.Invoice.com
             writer.Options = options;
 
             Bitmap map = writer.Write(url);
-            string filename = @"D:\my\invoiceCode\" + name + ".png";
-            map.Save(filename, ImageFormat.Png);
-            map.Dispose();
+            string path = @"D:\myInvoice";
+            string filename = string.Empty;
+            if (!Directory.Exists(path))
+            {
+                var directoryInfo = Directory.CreateDirectory(path);
+
+                filename = directoryInfo.FullName + "\\"+ name + ".png";
+                map.Save(filename, ImageFormat.Png);
+                map.Dispose();
+            }
+            else
+            {
+                filename = path +"\\"+ name + ".png";
+                map.Save(filename, ImageFormat.Png);
+                map.Dispose();
+
+            }
+
+
         }
     }
 }
