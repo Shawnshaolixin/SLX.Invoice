@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQ.Send", "RabbitMQ.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQ.Receive", "RabbitMQ.Receive\RabbitMQ.Receive.csproj", "{DBCDDD47-E5DF-4A59-9280-1448428F7565}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Django", "Django\Django.csproj", "{D8417B10-B753-422C-A615-0EC4C6B5AEC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{DBCDDD47-E5DF-4A59-9280-1448428F7565}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBCDDD47-E5DF-4A59-9280-1448428F7565}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBCDDD47-E5DF-4A59-9280-1448428F7565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8417B10-B753-422C-A615-0EC4C6B5AEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8417B10-B753-422C-A615-0EC4C6B5AEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8417B10-B753-422C-A615-0EC4C6B5AEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8417B10-B753-422C-A615-0EC4C6B5AEC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5DDE2F96-6864-4678-8092-00386E4E4BE3} = {7B06722B-632F-4785-8F50-EBDCBA907CFD}
 		{DBCDDD47-E5DF-4A59-9280-1448428F7565} = {7B06722B-632F-4785-8F50-EBDCBA907CFD}
+		{D8417B10-B753-422C-A615-0EC4C6B5AEC5} = {7B06722B-632F-4785-8F50-EBDCBA907CFD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19183BD5-496B-4104-AFD6-CE4DAAB4E880}
