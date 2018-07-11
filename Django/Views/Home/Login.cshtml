@@ -8,16 +8,119 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link href="~/Scripts/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/select2.full.min.js"></script>
     <title>登录页面</title>
+
 </head>
 <body>
-    <div> 
+    <select class="chosen-select" data-placeholder="Choose a Country..." multiple> </select>
+    <div>
+
         <form action="/Home/Login" method="post">
             用户名：<input type="text" name="userName" value="" />
-                <input type="submit" name="submit" value="提交" />
+            <input type="submit" name="submit" value="提交" />
         </form>
-      
+
+        请输入用户Id:  <input type="text" name="name" id="txtUserId" value="" />
+        <a id="findUser"> 点击我查找用户</a>
+
+        <h3>下面是用户列表</h3>
+        <table>
+            <tr>
+                <td>用户名</td>
+                <td id="dtUserName"></td>
+            </tr>
+        </table>
 
     </div>
+    <div class="select1">
+        <select style="width:200px" class="mySelect"></select>
+    </div>
+
 </body>
 </html>
+<script>
+    $(function () {
+        var dataList = [
+            { id: 0, text: 'ljiong.com(老囧博客)' },
+            { id: 1, text: 'Ants(蚂蚁)' },
+            { id: 2, text: 'can you speak javascript(你能讲JavaScript嘛)' },
+            { id: 3, text: 'vae(许嵩)' },
+            { id: 4, text: 'Badminton(羽毛球)' }
+        ];
+        $(".mySelect").select2({
+            ajax: {
+                type: 'GET',
+                url: "/Home/GetBank",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term, // search term 请求参数 ， 请求框中输入的参数
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                
+                    params.page = params.page || 1;
+                    /*var itemList = [];//当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                    var arr = data.result.list
+                    for(item in arr){
+                        itemList.push({id: item, text: arr[item]})
+                    }*/
+                    var d = JSON.parse( data.items);
+                    return {
+                        results: d,//itemList
+                        //pagination: {
+                        //    more: (params.page * 30) < data.total_count
+                        //}
+                    };
+                },
+                cache: true
+            },
+            placeholder: '请选择',//默认文字提示
+            language: "zh-CN",
+            tags: true,//允许手动添加
+            allowClear: true,//允许清空
+            escapeMarkup: function (markup) { return markup; }, // 自定义格式化防止xss注入
+            minimumInputLength: 1,//最少输入多少个字符后开始查询
+            formatResult: function formatRepo(repo) { return repo.text; }, // 函数用来渲染结果
+            formatSelection: function formatRepoSelection(repo) { return repo.text; } // 函数用于呈现当前的选择
+        });
+
+    })
+
+</script>
+
+<script type="text/javascript">
+
+
+    function getUserInfo() {
+        var userId = $("#txtUserId").val();
+        if (!userId) {//这里判断是否为空之类的。 和python差不多把。
+            alert("userId 不合法");
+            return;//返回了不让他往下执行了
+        }
+        $.get("/Home/getUserInfo?userId=" + userId, function (result) {
+            //着是一个  回调函数 这个 result 就是传过来的对象。我们可以试试
+            //  alert(result);//其实不推荐alert,现演示 alert kankan 看看能不能获取到
+
+            alert(result.Data);//什么鬼？
+            if (result.Code == 200) {//我这里写错了。。C 应该是大写
+                //表示查到数据了
+                var userInfo = result.Data;
+                alert(userInfo.UserName);//测试一下
+                //    $("#dtUserName").text(userInfo.UserName)
+            } else {
+                //没查到
+
+            }
+
+
+
+        })
+
+    }
+</script>

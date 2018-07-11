@@ -29,11 +29,12 @@ namespace SLX.Invoice.com
         static void FindInvoice()
         {
             int limit = 0;
-            var date = DateTime.Now.AddDays(-29).ToString("yyyy-MM-dd"); //消费日期
-            int minxAmount = 50;  //最低金额
-            int maxAmount = 220;//最高金额
+            var date = DateTime.Now.AddDays(-26).ToString("yyyy-MM-dd"); //消费日期
+            int minxAmount = 100;  //最低金额
+            int maxAmount = 260;//最高金额
             string waterNumber = "811147"; //"8011275";////商家
-            for (int i = 100; i <= 300; i++)
+            int waitCount = 0;
+            for (int i = 104; i <= 300; i++)
             {
 
                 string billNumber = $"B{i.ToString().PadLeft(3, '0')}";//$"H000{i.ToString().PadLeft(3, '0')}";// 
@@ -57,11 +58,15 @@ namespace SLX.Invoice.com
                         Console.WriteLine($"捞到一张金额为{strAmount},总金额为{limit}元");
                         var name = $"金额{strAmount}元_{date}_{id}";
                         Generate1(url, name);//生成二维码
-
                         break;
                     }
+                    else if(result.Contains("稍后再试"))
+                    {
+                        Console.WriteLine($"重试....{waitCount++}..次");
+                        Thread.Sleep(1000*50);
+                    }
                     Random random = new Random();
-                    var intRandom = random.Next(1000, 4000);
+                    var intRandom = random.Next(1000,4000);
                     Thread.Sleep(intRandom);
                 }
                 if (limit > 1000)
@@ -89,7 +94,7 @@ namespace SLX.Invoice.com
             writer.Options = options;
 
             Bitmap map = writer.Write(url);
-            string path = @"D:\myInvoice";
+            string path = @"D:\my\myInvoice";
             string filename = string.Empty;
             if (!Directory.Exists(path))
             {
