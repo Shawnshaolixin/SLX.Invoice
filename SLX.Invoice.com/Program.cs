@@ -28,16 +28,17 @@ namespace SLX.Invoice.com
         /// </summary>
         static void FindInvoice()
         {
+            //8011275,H000267,150.00,2018-07-11
             int limit = 0;
             var date = DateTime.Now.AddDays(-26).ToString("yyyy-MM-dd"); //消费日期
             int minxAmount = 100;  //最低金额
             int maxAmount = 260;//最高金额
-            string waterNumber = "811147"; //"8011275";////商家
+            string waterNumber = "8011275";//"811147"; //"8011275";////商家
             int waitCount = 0;
             for (int i = 104; i <= 300; i++)
             {
 
-                string billNumber = $"B{i.ToString().PadLeft(3, '0')}";//$"H000{i.ToString().PadLeft(3, '0')}";// 
+                string billNumber =$"H000{i.ToString().PadLeft(3, '0')}";// $"B{i.ToString().PadLeft(3, '0')}";
 
                 for (int j = minxAmount; j <= maxAmount; j++)
                 {
@@ -64,6 +65,11 @@ namespace SLX.Invoice.com
                     {
                         Console.WriteLine($"重试....{waitCount++}..次");
                         Thread.Sleep(1000*50);
+                        if (waitCount>=10)//重试次数太多
+                        {
+                            Console.WriteLine($"重试....{waitCount++}..次了，程序将要休息一会");
+                            break;
+                        }
                     }
                     Random random = new Random();
                     var intRandom = random.Next(1000,4000);
