@@ -20,7 +20,7 @@ namespace SLX.Invoice.com
             Console.WriteLine("-------------系统正在执行，请勿关闭该窗口，执行完毕后，会自动关闭----------------");
 
             FindInvoice();
-            Console.WriteLine("-------------end----------------");
+            Console.WriteLine("-------------执行完成了----------------");
             Console.ReadKey();
         }
         /// <summary>
@@ -30,15 +30,15 @@ namespace SLX.Invoice.com
         {
             //8011275,H000267,150.00,2018-07-11
             int limit = 0;
-            var date = DateTime.Now.AddDays(-26).ToString("yyyy-MM-dd"); //消费日期
-            int minxAmount = 100;  //最低金额
-            int maxAmount = 260;//最高金额
-            string waterNumber = "8011275";//"811147"; //"8011275";////商家
+            var date = "2018-07-29";//DateTime.Now.AddDays(-26).ToString("yyyy-MM-dd"); //消费日期
+            int minxAmount = 50;  //最低金额
+            int maxAmount = 220;//最高金额
+            string waterNumber = "8011275";////商家"811147"; //
             int waitCount = 0;
-            for (int i = 104; i <= 300; i++)
+            for (int i = 100; i <= 300; i++)
             {
 
-                string billNumber =$"H000{i.ToString().PadLeft(3, '0')}";// $"B{i.ToString().PadLeft(3, '0')}";
+                string billNumber = $"H000{i.ToString().PadLeft(3, '0')}";//$"B{i.ToString().PadLeft(3, '0')}";//
 
                 for (int j = minxAmount; j <= maxAmount; j++)
                 {
@@ -46,13 +46,15 @@ namespace SLX.Invoice.com
                     string str = $"{waterNumber},{billNumber},{strAmount}.00,{date}";
                     var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
                     var guid = Guid.NewGuid().ToString();
-                    string url = $"http://fp.xiabu.com:8080/xiabuInvoice/wxsm/wxlistOrders.do?r={base64}&WXOPENID={guid}";
+                     string url = $"http://fp.xiabu.com:8080/xiabuInvoice/wxsm/wxlistOrders.do?r={base64}&WXOPENID={guid}";
+                  //  string url = "http://fp.xiabu.com:8080/xiabuInvoice/wxsm/wxlistOrders.do?r=ODAxMTI3NSxIMDAwMDA4LDkwLjAwLDIwMTgtMDgtMjI=&WXOPENID=onGjejt0EMGheMTVYZo52Eqv_jXM";
                     HttpClient httpClient = new HttpClient();
+
                     var response = httpClient.GetStringAsync(url);
 
                     var result = response.Result;
 
-                    if (result.Contains("<title>扫码开票</title>"))
+                    if (result.Contains("可以开票"))
                     {
                         limit += j;
                         string id = Guid.NewGuid().ToString().Substring(0, 4);
@@ -61,18 +63,18 @@ namespace SLX.Invoice.com
                         Generate1(url, name);//生成二维码
                         break;
                     }
-                    else if(result.Contains("稍后再试"))
+                    else if (result.Contains("稍后再试"))
                     {
                         Console.WriteLine($"重试....{waitCount++}..次");
-                        Thread.Sleep(1000*50);
-                        if (waitCount>=10)//重试次数太多
-                        {
-                            Console.WriteLine($"重试....{waitCount++}..次了，程序将要休息一会");
-                            break;
-                        }
+                        // Thread.Sleep(1000*50);
+                        // if (waitCount>=5)//重试次数太多
+                        // {
+                        //    Console.WriteLine($"重试....{waitCount++}..次了，程序将要休息一会");
+                        //     break;
+                        //  }
                     }
                     Random random = new Random();
-                    var intRandom = random.Next(1000,4000);
+                    var intRandom = random.Next(1000, 2000);
                     Thread.Sleep(intRandom);
                 }
                 if (limit > 1000)
@@ -106,13 +108,13 @@ namespace SLX.Invoice.com
             {
                 var directoryInfo = Directory.CreateDirectory(path);
 
-                filename = directoryInfo.FullName + "\\"+ name + ".png";
+                filename = directoryInfo.FullName + "\\" + name + ".png";
                 map.Save(filename, ImageFormat.Png);
                 map.Dispose();
             }
             else
             {
-                filename = path +"\\"+ name + ".png";
+                filename = path + "\\" + name + ".png";
                 map.Save(filename, ImageFormat.Png);
                 map.Dispose();
 
